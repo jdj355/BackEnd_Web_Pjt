@@ -241,4 +241,4 @@ redirect → GET /diet?action=detail&id={id}
 | 이름 | 담당 |
 |---|---|
 | 전동재 | 식단 기능 (F401~F405) — DietController, DietManager, 식단 화면(JSP) |
-| (팀원) | 회원 기능 (F406~F410) — UserService, UserRepository, 회원 화면(JSP) |
+| 김태현 | 회원 기능 (F406~F410) — UserService, UserRepository, 회원 화면(JSP) |
