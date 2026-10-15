@@ -30,19 +30,23 @@ public class UserServiceImpl implements UserService {
 
         if (user == null
                 || user.getUserId() == null
-                || user.getPassword() == null) {
+                || user.getPassword() == null
+                || user.getName() == null) {
             return false;
         }
 
-        if (user.getUserId().isEmpty()
-                || user.getPassword().isEmpty()
-                || !isAlphabet(user.getUserId())
-                || !isAlphabet(user.getPassword())) {
+        if (!user.getUserId().matches("^[a-zA-Z0-9]{4,20}$")) {
             return false;
         }
 
-        // 중복 회원 검사
-        if (repository.getUser(user.getUserId()) != null) {
+        if (user.getPassword().length() < 8) {
+            return false;
+        }
+
+        if (user.getName().trim().isEmpty()
+                || user.getAge() <= 0
+                || user.getHeight() <= 0
+                || user.getWeight() <= 0) {
             return false;
         }
 
