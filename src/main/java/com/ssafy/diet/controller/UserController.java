@@ -2,6 +2,10 @@
 package com.ssafy.diet.controller;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 import com.ssafy.diet.dto.User;
 import com.ssafy.diet.exception.LoginException;
@@ -101,7 +105,8 @@ public class UserController extends HttpServlet {
     }
 
     // 회원가입
-    private void signup(HttpServletRequest request,
+    private void signup(
+            HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -110,24 +115,86 @@ public class UserController extends HttpServlet {
             return;
         }
 
-        String userId = request.getParameter("userId");
-        String password = request.getParameter("password");
+        try {
+            String userId = request.getParameter("userId");
+            String password = request.getParameter("password");
+            // 비밀번호 8글자 이상 검사
+//            if (password == null || password.length() < 8) {
+//                request.setAttribute("error", "비밀번호는 8글자 이상이어야 합니다.");
+//                forward(request, response, "signup.jsp");
+//                return;
+//            }
+            String name = request.getParameter("name");
 
-        // User 생성자 구조를 아직 모르므로
-        // 기본 생성자와 setter 사용을 가정
-        User user = new User();
-        user.setUserId(userId);
-        user.setPassword(password);
+            int age = Integer.parseInt(
+                    request.getParameter("age"));
 
-        boolean result = service.add(user);
+            long height = Long.parseLong(
+                    request.getParameter("height"));
 
-        if (result) {
-            response.sendRedirect(
-                    request.getContextPath()
-                    + "/user?action=loginForm");
-        } else {
-            request.setAttribute("error",
-                    "회원가입에 실패했습니다.");
+            long weight = Long.parseLong(
+                    request.getParameter("weight"));
+
+            String smoking = request.getParameter("smoking");
+            String drinking = request.getParameter("drinking");
+
+            String[] diseases =
+                    request.getParameterValues("deseaseList");
+
+            String phoneNumber =
+                    request.getParameter("phoneNumber");
+
+            String email =
+                    request.getParameter("email");
+
+            String adress =
+                    request.getParameter("adress");
+
+            User user = new User();
+
+            user.setUserId(userId);
+            user.setPassword(password);
+            user.setName(name);
+            user.setAge(age);
+            user.setHeight(height);
+            user.setWeight(weight);
+            user.setSmoking(smoking);
+            user.setDrinking(drinking);
+
+            user.setDeseaseList(
+                    diseases == null
+                        ? new ArrayList<>()
+                        : Arrays.asList(diseases)
+            );
+
+            user.setPhoneNumber(phoneNumber);
+            user.setEmail(email);
+            user.setAdress(adress);
+
+            // 시스템 관리 필드
+            user.setDelYn("N");
+            user.setRegDate(new Date());
+            user.setModDate(null);
+            user.setLoginStatus("N");
+
+            boolean result = service.add(user);
+
+            if (result) {
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/user?action=loginForm");
+            } else {
+                request.setAttribute(
+                        "error", "회원가입에 실패했습니다.");
+
+                forward(request, response, "signup.jsp");
+            }
+            
+        } catch (NumberFormatException e) {
+
+            request.setAttribute(
+                    "error", "나이, 키, 몸무게는 숫자로 입력해주세요.");
+
             forward(request, response, "signup.jsp");
         }
     }
